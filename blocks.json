@@ -1,0 +1,20 @@
+{
+  "header": {
+    "type": "header",
+    "text": {
+      "type": "plain_text",
+      "text": "Dear colleagues, please submit the missing timesheets in EBS and OA",
+      "emoji": true
+    }
+  },
+  "divider": {
+    "type": "divider"
+  },
+  "plaintTextSection": {
+    "type": "section",
+    "text": {
+      "type": "plain_text",
+      "text": ""
+    }
+  }
+}

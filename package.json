@@ -1,0 +1,19 @@
+{
+  "name": "timesheets-automation-slack-bot",
+  "version": "1.0.0",
+  "description": "",
+  "main": "server.js",
+  "private": true,
+  "scripts": {
+    "serve": "npx nodemon server.js"
+  },
+  "keywords": [],
+  "author": "",
+  "license": "ISC",
+  "dependencies": {
+    "@slack/web-api": "^6.7.2"
+  },
+  "devDependencies": {
+    "dotenv": "^16.0.1"
+  }
+}
