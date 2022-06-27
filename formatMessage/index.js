@@ -4,14 +4,13 @@ const formatMessage = (data) => {
   const messageSections = [blocks.header, blocks.divider]
 
   try {
-    data.forEach(({ name, email, dates }) => {
+    data.forEach(({ name, slackUsername, dates }) => {
       const getDates = (platform) => {
         return dates[platform] && dates[platform].length 
           ? `${platform.toUpperCase()}: ${dates[platform].join(', ')}` : '';
       }
     
-      const slackMention = `<@${email.split('@')[0]}>`;
-      const userName = `${name || ''} ${slackMention}`;
+      const userName = `${name || ''} <@${slackUsername}>`;
     
       const oaDates = getDates('oa') ? getDates('oa') + '.' : '';
       const ebsDates = getDates('ebs') ? getDates('ebs') + '.' : '';
