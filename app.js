@@ -6,7 +6,7 @@ const formatMessage = require('./formatMessage');
 require('dotenv').config();
 
 const managers = ['U03HNULJ142', 'U03H5UPDPE0'];
-const endpoint = 'https://6287-97-65-3-142.ngrok.io';
+const endpoint = 'https://f2ab-5-152-64-30.ngrok.io';
 
 const app = new App({
   token: process.env.SLACK_BOT_TOKEN,
@@ -23,7 +23,13 @@ app.command('/macys_timesheets', async ({ command, ack, respond }) => {
 
   console.log(`Command triggered by ${command.user_name}, access: ${access}`);
 
-  if (!access) return;
+  if (!access) {
+    await ack();
+    return respond({
+      response_type: 'ephemeral',
+      text: `Sorry, but you don't have permission to run this command`
+    })
+  }
 
   const { data } = await axios.get(`${endpoint}/timesheets`, { params: { period }});
 
