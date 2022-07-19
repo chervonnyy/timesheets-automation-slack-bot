@@ -1,11 +1,11 @@
-FROM node:16
+FROM node:16-slim
 
 WORKDIR /usr/src/app
 
 COPY package*.json yarn.lock ./
 
-RUN npm install
+RUN yarn install
 
 COPY . .
 
-CMD [ "node", "app.js" ]
+CMD [ "node", "src/app.js" ]
