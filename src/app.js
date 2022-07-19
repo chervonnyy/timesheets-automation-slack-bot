@@ -1,8 +1,18 @@
-const { App } = require('@slack/bolt');
+const { App, ExpressReceiver } = require('@slack/bolt');
 const timesheetsCommand = require('./commands/timesheets');
 
 // needed to read tokents from .env file
 require('dotenv').config();
+
+const receiver = new ExpressReceiver({
+  signingSecret: process.env.SLACK_SIGNING_SECRET
+});
+
+// health check 
+receiver.app.get('/', (_, res) => {
+  // respond 200 OK to the default health check method
+  res.status(200).send();
+});
 
 const app = new App({
   token: process.env.SLACK_BOT_TOKEN,
@@ -13,7 +23,7 @@ const app = new App({
 
 const run = async (port) => {
   await app.start(process.env.PORT || port);
-  console.log('⚡️ Bolt app is running!');
+  await receiver.start(process.env.HELTHCHECK_PORT);
 }
 
 app.command('/macys_timesheets', timesheetsCommand(app));
