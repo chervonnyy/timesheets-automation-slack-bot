@@ -4,20 +4,28 @@ const formatMessage = require('../formatMessage/timesheets');
 const timesheetsCommand = app => async ({ command, ack, respond, say }) => {
   await ack();
 
-  const dates = command.text.trim();
+  const dates = command.text.trim().split('-');
   const username = command.user_name;
 
-  if (!dates) {
+  if (!dates || dates.length !== 2) {
     return respond({
       response_type: 'ephemeral',
-      text: `You have to specify dates. For example: /macys_timesheets 01.07-25.07`
+      text: `You have to specify dates. For example: /macys_timesheets 01/07/22-25/07/22`
     });
   }
 
   try {
-    const { data } = await axios.get(`${process.env.ENDPOINT}/timesheets`, { params: { dates, username }});
+    const { success, errorMsg, result } = await axios.post(process.env.ENDPOINT, {
+      dateFrom: dates[0],
+      dateTo: dates[1],
+      username
+    }, {
+      cmd: 'whoNotSubmit'
+    });
 
-    const users = await Promise.all(data.map(async (rawUser) => {
+    if (!success) throw new Error(errorMsg || 'Unhandled error');
+
+    const users = await Promise.all(result.map(async (rawUser) => {
       const { user } = await app.client.users.lookupByEmail({ email: rawUser.email });
       return await { ...rawUser, slackUsername: user.name };
     }));
