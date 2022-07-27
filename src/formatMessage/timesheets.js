@@ -1,4 +1,5 @@
 const blocks = require('./blocks.json');
+const groupDates = require('../utils/groupDates');
 
 const formatTimesheetsMessage = (data) => {
   const messageSections = [
@@ -15,16 +16,16 @@ const formatTimesheetsMessage = (data) => {
     data.forEach(({ name, slackUsername, dates }) => {
       const getDates = (platform) => {
         return dates[platform] && dates[platform].length 
-          ? `${platform.toUpperCase()}: ${dates[platform].join(', ')}.` : '';
+          ? `${platform.toUpperCase()}: ${groupDates(dates[platform])}.` : '';
       }
     
-      const userName = `${name || ''} <@${slackUsername}>`;
+      const userName = slackUsername ? `${name} <@${slackUsername}>` : name;
       
       messageSections.push({ 
         ...blocks.plaintTextSection,
         "text": {
           ...blocks.plaintTextSection.text, 
-          "text": `${userName}: ${getDates('oa')} ${getDates('ebs')}`
+          "text": `${userName} ${getDates('oa')} ${getDates('ebs')}`,
         },
       });
     });

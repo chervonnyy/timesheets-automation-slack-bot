@@ -10,9 +10,15 @@ const timesheetsCommand = app => async ({ command, ack, respond }) => {
   if (!dates || dates.length !== 2) {
     return respond({
       response_type: 'ephemeral',
-      text: `You have to specify dates. For example: /macys_timesheets 01/03/2022-25/03/2022`
+      text: `You have to specify dates. For example: /macys_timesheets 01/07/2022-05/07/2022`
     });
   }
+
+  respond({
+    response_type: 'ephemeral',
+    text: `Your request for timesheets is processing, please wait.`
+  });
+  console.log(`Timesheeets request for dates: ${dates}`);
 
   try {
     const { data } = await axios.post(process.env.ENDPOINT, {
@@ -23,27 +29,33 @@ const timesheetsCommand = app => async ({ command, ack, respond }) => {
 
     const { success, errorMsg, result } = data;
 
+    console.log(`Recieved response, is succesful: ${success}`);
+    console.log(success ? `Users length: ${result?.length}` : `Error: ${errorMsg}`)
+
     if (!success) throw new Error(errorMsg || 'Unhandled error');
 
     const users = await Promise.all(result.map(async (rawUser) => {
-      let slackUsername;
       try {
         const { user } = await app.client.users.lookupByEmail({ email: rawUser.email });
-        slackUsername = user.name;
+        return { ...rawUser, slackUsername: user.name };
       } catch(error) {
-        slackUsername = rawUser.email.split('@')[0];
+        return rawUser;
       }
-      return await { ...rawUser, slackUsername };
     }));
-  
+
+    // for demo only
+    const slackUsers = users.filter(user => user.slackUsername);
+    const slicedUsers = slackUsers.length ? slackUsers : users.slice(0, 9);
+
     respond({
       mrkdwn: true,
-      blocks: formatMessage(users),
+      blocks: formatMessage(slicedUsers),
       text: 'Timesheets reminder',
       response_type: 'in_channel',
-    });
+    });  
 
   } catch (error) {
+    console.log(`Failed with error: ${error}`);
     respond({
       response_type: 'ephemeral',
       text: error.message
