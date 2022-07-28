@@ -1,0 +1,55 @@
+{
+    "display_information": {
+        "name": "Timesheets",
+        "description": "timesheets automation",
+        "background_color": "#404d7a"
+    },
+    "features": {
+        "bot_user": {
+            "display_name": "Timesheets Bot",
+            "always_online": true
+        },
+        "slash_commands": [
+            {
+                "command": "/macys_timesheets",
+                "description": "Timesheets reminder",
+                "should_escape": false
+            },
+            {
+                "command": "/macys_training",
+                "description": "Macy's Security Training Reminder",
+                "should_escape": false
+            }
+        ]
+    },
+    "oauth_config": {
+        "scopes": {
+            "bot": [
+                "channels:history",
+                "chat:write",
+                "commands",
+                "groups:history",
+                "im:history",
+                "im:write",
+                "incoming-webhook",
+                "users:read",
+                "users:read.email"
+            ]
+        }
+    },
+    "settings": {
+        "event_subscriptions": {
+            "bot_events": [
+                "message.channels",
+                "message.groups",
+                "message.im"
+            ]
+        },
+        "interactivity": {
+            "is_enabled": true
+        },
+        "org_deploy_enabled": false,
+        "socket_mode_enabled": true,
+        "token_rotation_enabled": false
+    }
+}
