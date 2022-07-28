@@ -1,6 +1,5 @@
 const axios = require('axios');
 const formatMessage = require('../formatMessage/timesheets');
-const spliceChunks = require('../utils/spliceChunks');
 
 const timesheetsCommand = app => async ({ command, ack, respond }) => {
   await ack();
@@ -44,12 +43,16 @@ const timesheetsCommand = app => async ({ command, ack, respond }) => {
       }
     }));
 
-    spliceChunks(users).forEach((chunk, i) => {
-      // header skips for all messages except the first one 
-      const skipHeader = Boolean(i);
+    const projects = users.reduce((acc, user) => {
+      const users = acc[user.project];
+      acc[user.project] = users ? [...users, user] : [user];
+      return acc;
+    }, {});
+
+    Object.values(projects).forEach(users => {
       respond({
         mrkdwn: true,
-        blocks: formatMessage(chunk, skipHeader),
+        blocks: formatMessage(users),
         text: 'Timesheets reminder',
         response_type: 'in_channel',
       }); 

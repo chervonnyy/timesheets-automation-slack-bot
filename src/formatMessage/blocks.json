@@ -10,10 +10,10 @@
   "divider": {
     "type": "divider"
   },
-  "plaintTextSection": {
+  "section": {
     "type": "section",
     "text": {
-      "type": "plain_text",
+      "type": "mrkdwn",
       "text": ""
     }
   }
