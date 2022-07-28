@@ -1,5 +1,6 @@
 const axios = require('axios');
 const formatMessage = require('../formatMessage/timesheets');
+const spliceChunks = require('../utils/spliceChunks');
 
 const timesheetsCommand = app => async ({ command, ack, respond }) => {
   await ack();
@@ -43,16 +44,16 @@ const timesheetsCommand = app => async ({ command, ack, respond }) => {
       }
     }));
 
-    // for demo only
-    const slackUsers = users.filter(user => user.slackUsername);
-    const slicedUsers = slackUsers.length ? slackUsers : users.slice(0, 9);
-
-    respond({
-      mrkdwn: true,
-      blocks: formatMessage(slicedUsers),
-      text: 'Timesheets reminder',
-      response_type: 'in_channel',
-    });  
+    spliceChunks(users).forEach((chunk, i) => {
+      // header skips for all messages except the first one 
+      const skipHeader = Boolean(i);
+      respond({
+        mrkdwn: true,
+        blocks: formatMessage(chunk, skipHeader),
+        text: 'Timesheets reminder',
+        response_type: 'in_channel',
+      }); 
+    }); 
 
   } catch (error) {
     console.log(`Failed with error: ${error}`);

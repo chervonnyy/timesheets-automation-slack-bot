@@ -1,8 +1,8 @@
 const blocks = require('./blocks.json');
 const groupDates = require('../utils/groupDates');
 
-const formatTimesheetsMessage = (data) => {
-  const messageSections = [
+const formatTimesheetsMessage = (data, skipHeader) => {
+  const messageSections = skipHeader ? [] : [
     {
       ...blocks.header,
       text: {
