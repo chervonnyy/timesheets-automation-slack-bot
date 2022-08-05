@@ -1,9 +1,9 @@
 const blocks = require('./blocks.json');
 const groupDates = require('../utils/groupDates');
 
-const formatTimesheetsMessage = (data) => {
+const formatTimesheetsMessage = (data, showHeader) => {
   const projectName = data[0].project || "Macy's"
-  const messageSections = [
+  const messageSections = showHeader ? [
     {
       ...blocks.header,
       text: {
@@ -19,6 +19,14 @@ const formatTimesheetsMessage = (data) => {
         "text": `*${projectName}*`,
       },
     },
+  ] : [
+    {
+      ...blocks.section,
+      "text": {
+        ...blocks.section.text, 
+        "text": `*${projectName}*`,
+      },
+    }
   ];
 
   try {
@@ -28,8 +36,8 @@ const formatTimesheetsMessage = (data) => {
     }
 
     const message = data.reduce((acc, user) => {
-      const { name, slackUsername, dates } = user;
-      const userName = slackUsername ? `${name} <@${slackUsername}>` : name;
+      const { name, slackUsername, dates, email } = user;
+      const userName = slackUsername ? `${name} <@${slackUsername}>` : `${name} @${email.split('@')[0]}`;
       return acc + `${userName} ${getDates('oa', dates)} ${getDates('ebs', dates)} \n`
     }, '');
 
@@ -40,6 +48,20 @@ const formatTimesheetsMessage = (data) => {
         "text": message,
       },
     });
+
+    const managers = data.reduce((acc, user) => {
+      const manager = user.manager.email && `@${user.manager.email.split('@')[0]}`;
+      return manager && !acc.includes(manager) ? [...acc, manager] : acc;
+    }, []);
+
+    messageSections.push({ 
+      ...blocks.section,
+      "text": {
+        ...blocks.section.text, 
+        "text": `cc ${managers.join(' ')}`,
+      },
+    });
+
   } catch (error) {
     console.log('Error while formatting data', error)
   }

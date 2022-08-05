@@ -16,7 +16,7 @@ const timesheetsCommand = app => async ({ command, ack, respond }) => {
 
   respond({
     response_type: 'ephemeral',
-    text: `Your request for timesheets is processing, please wait.`
+    text: `Your timesheets request for dates: ${dates} is processing, please wait.`
   });
   console.log(`Timesheeets request for dates: ${dates}`);
 
@@ -34,16 +34,7 @@ const timesheetsCommand = app => async ({ command, ack, respond }) => {
 
     if (!success) throw new Error(errorMsg || 'Unhandled error');
 
-    const users = await Promise.all(result.map(async (rawUser) => {
-      try {
-        const { user } = await app.client.users.lookupByEmail({ email: rawUser.email });
-        return { ...rawUser, slackUsername: user.name };
-      } catch(error) {
-        return rawUser;
-      }
-    }));
-
-    const projects = users.reduce((acc, user) => {
+    const projects = result.reduce((acc, user) => {
       const users = acc[user.project];
       acc[user.project] = users ? [...users, user] : [user];
       return acc;
