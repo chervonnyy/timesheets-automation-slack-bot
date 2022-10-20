@@ -6,7 +6,7 @@
     },
     "features": {
         "bot_user": {
-            "display_name": "Timesheets Bot",
+            "display_name": "Macy's Timesheets Bot",
             "always_online": true
         },
         "slash_commands": [
