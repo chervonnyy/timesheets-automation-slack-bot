@@ -1,12 +1,12 @@
 {
     "display_information": {
         "name": "Timesheets",
-        "description": "timesheets automation",
+        "description": "Macys timesheets automation",
         "background_color": "#404d7a"
     },
     "features": {
         "bot_user": {
-            "display_name": "Macy's Timesheets Bot",
+            "display_name": "Macys Timesheets Bot",
             "always_online": true
         },
         "slash_commands": [
